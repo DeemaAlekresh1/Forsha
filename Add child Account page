@@ -38,8 +38,8 @@ public class AddChlildAccountMainPage extends AppCompatActivity {
         btn = findViewById(R.id.button);
         cb1 = findViewById(R.id.checkBox1);
         cb2 = findViewById(R.id.checkBox2);
-        ib1 = findViewById(R.id.checkBox4);//YELLOW HAIR - GIRL
-        ib2 = findViewById(R.id.checkBox5);//LADY WITH BROWN HAIR
+        ib1 = findViewById(R.id.checkBox4);
+        ib2 = findViewById(R.id.checkBox5);
         ib3 = findViewById(R.id.checkBox3);
         ib4 = findViewById(R.id.checkBox6);
 
