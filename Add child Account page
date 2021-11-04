@@ -1,0 +1,170 @@
+package com.example.forsha;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+public class AddChlildAccountMainPage extends AppCompatActivity {
+    private FirebaseAuth mAuth;
+    ImageView BackIcon ;
+
+    EditText tx1, tx2;
+    Button btn;
+    CheckBox cb1, cb2;
+    CheckBox ib1, ib2, ib3, ib4;
+    DatabaseReference AccountReference;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_child);
+
+        tx1 = findViewById(R.id.textView);
+        tx2 = findViewById(R.id.textView2);
+        btn = findViewById(R.id.button);
+        cb1 = findViewById(R.id.checkBox1);
+        cb2 = findViewById(R.id.checkBox2);
+        ib1 = findViewById(R.id.checkBox4);//YELLOW HAIR - GIRL
+        ib2 = findViewById(R.id.checkBox5);//LADY WITH BROWN HAIR
+        ib3 = findViewById(R.id.checkBox3);
+        ib4 = findViewById(R.id.checkBox6);
+
+
+
+
+
+//--------------------------- only one box is checked for 1-Gender . 2-Character , also if no box is checked ! ---------------------------///
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int age =  Integer.parseInt(tx2.getText().toString());
+                String name = tx1.getText().toString();
+
+
+                if ((TextUtils.isEmpty(tx1.getText().toString())) || (TextUtils.isEmpty(tx2.getText().toString()))) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك ادخال جميع البيانات !", Toast.LENGTH_SHORT).show();
+
+                }else if ( age<3 ) {
+
+                    Toast.makeText(getApplicationContext(), "عذرا يجب أن يكون عمر الطفل أكثر من ٣ سنوات!", Toast.LENGTH_SHORT).show();
+
+
+                }else if ( age>11 ) {
+
+                    Toast.makeText(getApplicationContext(), "عذرا يجب أن يكون عمر الطفل أقل من ١١ سنة!", Toast.LENGTH_SHORT).show();
+
+
+                } else if (name.matches(".*\\s.*") ){
+
+                    Toast.makeText(getApplicationContext(), " يرجى التأكد من عدم وجود مسافة في اسم الطفل!", Toast.LENGTH_SHORT).show();
+
+
+                }else if (cb1.isChecked() && cb2.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار خيار واحد !  ", Toast.LENGTH_SHORT).show();
+                } else if (cb1.isChecked() == false && cb2.isChecked() == false && ib1.isChecked() == false && ib2.isChecked() == false && ib3.isChecked() == false && ib4.isChecked() == false) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار نوع جنس الطفل و الشخصية !  ", Toast.LENGTH_SHORT).show();
+
+                } else if (cb1.isChecked() == false && cb2.isChecked() == false) {
+                    Toast.makeText(getApplicationContext(), " عذرا يجب عليك اختيار  نوع جنس الطفل!  ", Toast.LENGTH_SHORT).show();
+                } else if (ib1.isChecked() == false && ib2.isChecked() == false && ib3.isChecked() == false && ib4.isChecked() == false) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية !  ", Toast.LENGTH_SHORT).show();
+                } else if (ib1.isChecked() && ib2.isChecked() && ib3.isChecked() && ib4.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+                } else if (ib1.isChecked() && ib2.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+
+                } else if (ib2.isChecked() && ib3.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+                } else if (ib3.isChecked() && ib4.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+
+                } else if (ib1.isChecked() && ib3.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+                } else if (ib1.isChecked() && ib4.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+                } else if (ib2.isChecked() && ib4.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+                } else if (ib3.isChecked() && ib4.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+
+                } else if (ib3.isChecked() && ib2.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "عذرا يجب عليك اختيار شخصية واحدة فقط !  ", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    ChildAccount Account = new ChildAccount();
+//--------------------------- Sending Name to db
+                    Account.setName(tx1.getText().toString());
+//--------------------------- Sending age to db
+                    Account.setAge(tx2.getText().toString());
+//--------------------------- Sending gender to db
+                    if (cb1.isChecked()) {
+                        Account.setGender(cb1.getText().toString());
+                       // cb1.setText("");
+                    } else {
+                        Account.setGender(cb2.getText().toString());
+                       // cb2.setText("");
+                    }
+
+
+//--------------------------- Sending Character URL to db
+                    if (ib1.isChecked()) {
+                        Account.setImg("https://firebasestorage.googleapis.com/v0/b/forsha-8c7e3.appspot.com/o/img1.png?alt=media&token=8e2d0cc0-7202-4eba-b407-6b54fdd56e99");
+                    } else if (ib2.isChecked()) {
+                        Account.setImg("https://firebasestorage.googleapis.com/v0/b/forsha-8c7e3.appspot.com/o/img4.png?alt=media&token=ae2e78e3-5ec9-46ed-879f-128a9534e871");
+                    } else if (ib3.isChecked()) {
+                        Account.setImg("https://firebasestorage.googleapis.com/v0/b/forsha-8c7e3.appspot.com/o/img2.png?alt=media&token=6c08e509-41e7-4039-a9dd-5b34189f672d");
+
+                    } else {
+                        Account.setImg("https://firebasestorage.googleapis.com/v0/b/forsha-8c7e3.appspot.com/o/img3.png?alt=media&token=eff251ef-b248-42f7-b97b-46afe4c3e51d");
+
+                    }
+                    tx1.setText("");
+                    tx2.setText("");
+
+
+//--------------------------- Sending User id to db
+                    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    String UID = currentFirebaseUser.getUid();
+                    Account.setID(UID);
+                    AccountReference = FirebaseDatabase.getInstance().getReference().child("Member").child(UID).child("ChildAccounts").push();
+                    AccountReference.setValue(Account);
+                    Toast.makeText(getApplicationContext(), "تم إنشاء الصفحة بنجاح !  ", Toast.LENGTH_SHORT).show();
+                }
+//---------------------------              ---------------------------///
+
+
+            }
+        });
+
+        BackIcon = findViewById(R.id.backicont);
+        BackIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                Intent i = new Intent(AddChlildAccountMainPage.this, ParentDashboard.class);
+                startActivity(i);
+
+            }
+        });
+    }
+
+
+}
